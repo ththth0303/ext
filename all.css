@@ -1,0 +1,9 @@
+#head1 {
+    color: red;
+    background-color: blue;
+}
+
+#wrap-extension {
+    position: fixed;top: 0px;
+    left: 0px;z-index:1000;
+}
