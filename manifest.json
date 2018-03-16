@@ -16,8 +16,8 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["jquery.min.js", "jquery-ui.js", "all.js"],
-      "css": ["jquery-ui.css", "all.css"],
+      "js": ["jquery.min.js", "jquery-ui.js", "all.js", "js/externals/popup.js"],
+      "css": ["jquery-ui.css",  "all.css"],
       "run_at": "document_start"
     }
   ],
