@@ -1,25 +1,26 @@
-var tagList = ["cats", "dogs"];
+var tagList = ["cats"];
 var img = 0;
+var isPlaying = false;
 
 function renderStatus(statusText) {
-document.getElementById('status').textContent = statusText;
+$('#status').text(statusText);
 }
 
 function renderImage(imageData) {
-document.getElementById('image-wrap').href = imageData.url;
-document.getElementById('image').src = imageData.image_original_url;
-
+    $('#image-wrap').attr('href', imageData.url)
+    $('#image').attr('src', imageData.image_original_url)
 }
 
 async function getBoobsUrl() {
     let tag = tagList[Math.floor(Math.random()*tagList.length)];
     renderStatus('Loading for ' + tag + ' ...');
-    let url = 'https://api.giphy.com/v1/gifs/random?api_key=a89c66e48519481ab448a3f8356e635c&tag=' + tag;
+    let url = 'https://api.giphy.com/v1/gifs/random?api_key=6Mlyf4s706n6UOGc8MxfbIJIMXpLwj4i&tag=' + tag + '&g=5';
     let result = await fetch(url);
     let jsonResult =  await result.json();
     await renderImage(jsonResult.data);
     renderStatus('');
 }
+
 var textnode = '\
     <div id="wrap-extension">\
         <div id="content1" style="display: none;">\
@@ -35,12 +36,14 @@ function playImg() {
     img = setInterval(() => {
         getBoobsUrl();
     }, 5000);
+    isPlaying = true;
 }
 
 function pauseImg() {
     $("#content1").hide();
     console.log(img);
     clearInterval(img);
+    isPlaying = false;
 }
 
 $(document).ready(function(){
@@ -66,5 +69,32 @@ $(document).ready(function(){
     $(window).on( "focus", function(e){
         console.log('chuyen tab vào')
     });
+
+    chrome.runtime.onMessage.addListener((request, port, sendResponse) => {
+        console.log(port, request);
+        // if (request.message === 'get status') {
+        // sendResponse({tagList: tagList, isPlaying: isPlaying});
+        // }
+        // if (request.message === 'add tag') {
+        //     tagList.push(request.tag);
+        // }
+        // console.log(tagList);
+        switch (request.message) {
+            case 'get status':
+                sendResponse({tagList: tagList, isPlaying: isPlaying});
+                break;
+            case 'add tag':
+                tagList.push(request.tag);
+                console.log(tagList, 'thêm')
+                break;
+            case 'delete tag':
+                let id = tagList.indexOf(request.tag);
+                console.log(id)
+                if (id !== -1) {
+                    tagList.splice(id, 1);
+                }
+                console.log(tagList, 'xóa')
+        }
+    })
 
 });

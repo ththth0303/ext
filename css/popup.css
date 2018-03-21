@@ -1,0 +1,10 @@
+.checkbox {
+    float: left;
+    margin-top: 10px !important;
+    margin-right: 10px;
+}
+
+.delete-tag {
+    display: none;
+    color: red;
+}

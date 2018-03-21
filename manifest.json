@@ -11,7 +11,7 @@
     "activeTab",
     "http://*/*",
     "https://*/*",
-    "http://api.giphy.com/"
+    "storage"
   ],
   "content_scripts": [
     {
