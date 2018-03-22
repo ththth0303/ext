@@ -13,8 +13,11 @@ function renderImage(imageData) {
 
 async function getBoobsUrl() {
     let tag = tagList[Math.floor(Math.random()*tagList.length)];
+    if (tag === undefined) {
+        return;
+    }
     renderStatus('Loading for ' + tag + ' ...');
-    let url = 'https://api.giphy.com/v1/gifs/random?api_key=6Mlyf4s706n6UOGc8MxfbIJIMXpLwj4i&tag=' + tag + '&g=5';
+    let url = 'https://api.giphy.com/v1/gifs/random?api_key=6Mlyf4s706n6UOGc8MxfbIJIMXpLwj4i&tag=' + tag;
     let result = await fetch(url);
     let jsonResult =  await result.json();
     await renderImage(jsonResult.data);

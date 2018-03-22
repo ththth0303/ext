@@ -6,33 +6,52 @@ function addTag(tagName) {
             console.log(data, 'tagname')
             data.myTags.push(tagName);
         } else {
-            data = [tagName];
+            data.myTags = [tagName];
         }
         chrome.storage.sync.set({myTags: data.myTags}, function() {
             console.log('The number is set to ' + data);
-            $(".my-tags").append(` <div class="checkbox-inline">
-                <label><input type="checkbox" value="${tagName}">${tagName}</label>
-                </div>`);
+            renderTag(tagName);
         });
     });
 }
 
-function renderTag() {
+function deleteTag(tagName) {
+    chrome.storage.sync.get('myTags', function(data) {
+        console.log(data)
+        console.log(Array.isArray(data.myTags));
+        let id = data.myTags.indexOf(tagName);
+        if (id !== -1) {
+            data.myTags.splice(id, 1);
+        }
+        chrome.storage.sync.set({myTags: data.myTags}, function() {
+            console.log('The number is set to ' + data);
+        });
+    });
+}
+
+function renderTag(tagName) {
+    $(".my-tags").append(`
+        <div class="checkbox-inline">
+            <label><input type="checkbox" value="${tagName}">${tagName}</label>
+            <span class="delete-tag"> x</span>
+        </div>`
+    );
+}
+
+function renderAllTag() {
     chrome.storage.sync.get('myTags', function(data) {
         console.log(data)
         console.log(Array.isArray(data.myTags))
         if (Array.isArray(data.myTags)) {
             data.myTags.forEach((item) => {
-                $(".my-tags").append(` <div class="checkbox-inline">
-                    <label><input type="checkbox" value="${item}">${item}</label>
-                    </div>`);
+                renderTag(item)
             });
         }
     });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    renderTag();
+    renderAllTag();
     $("#pause").hide();
     $('#play').on('click', () => {
         chrome.tabs.executeScript(null, {code:"playImg()"});
@@ -66,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    $(".checkbox-inline input").on('change', (e) => {
+    $(document).on('change', ".checkbox-inline input", (e) => {
         let tag = e.target.value;
         console.log(tag)
         let message = '';
@@ -85,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $(".input-group-addon").on('click', () => {
         let tag = $('#tag').val();
         if (tag !== '') {
+            $('#tag').val('');
             addTag(tag);
         } else {
             console.log('khong nhap gi');
@@ -96,12 +116,19 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(data.myTags, 'vào')
     });
 
-    $( ".checkbox-inline" ).hover(
-        function() {
-            $( this ).find("span").css('display', 'inline');
-        }, function() {
-            $( this ).find("span").css('display', 'none');
+    $(document).on("mouseover", ".checkbox-inline", function() {
+        if (!$(this).find('input')[0].checked) {
+            $(this).find("span").css('display', 'inline');
         }
-    );
+    });
+    $(document).on("mouseout", ".checkbox-inline", function() {
+        $(this).find("span").css('display', 'none');
+    });
+
+    $(document).on("click", ".delete-tag", function() {
+        let tagName = $(this).parent().find("input").val();
+        $(this).parent().remove();
+        deleteTag(tagName);
+    })
 });
 
