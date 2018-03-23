@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {message: message, tag: tag});
         });
-        console.log(e.target.checked);
     })
 
     $(".input-group-addon").on('click', () => {
@@ -110,10 +109,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('khong nhap gi');
         }
         
-    });
-
-    chrome.storage.sync.get('myTags', function(data) {
-        console.log(data.myTags, 'vào')
     });
 
     $(document).on("mouseover", ".checkbox-inline", function() {

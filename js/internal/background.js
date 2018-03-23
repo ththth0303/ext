@@ -1,4 +1,4 @@
-var tagList = ["cats"];
+var tagList = ["cat"];
 var img = 0;
 var isPlaying = false;
 
@@ -65,23 +65,15 @@ $(document).ready(function(){
     
     $('head').prepend('<script>isVip=true;</script>');
     $('#wrap-extension').draggable({ containment: "window" }).resizable({handles: 'e, w'});
-    $(window).on( "blur", function(e){
-        console.log('chuyen tab ra')
-    });
+    // $(window).on( "blur", function(e){
+    //     console.log('chuyen tab ra')
+    // });
 
-    $(window).on( "focus", function(e){
-        console.log('chuyen tab vào')
-    });
+    // $(window).on( "focus", function(e){
+    //     console.log('chuyen tab vào')
+    // });
 
     chrome.runtime.onMessage.addListener((request, port, sendResponse) => {
-        console.log(port, request);
-        // if (request.message === 'get status') {
-        // sendResponse({tagList: tagList, isPlaying: isPlaying});
-        // }
-        // if (request.message === 'add tag') {
-        //     tagList.push(request.tag);
-        // }
-        // console.log(tagList);
         switch (request.message) {
             case 'get status':
                 sendResponse({tagList: tagList, isPlaying: isPlaying});
