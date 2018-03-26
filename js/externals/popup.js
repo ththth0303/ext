@@ -1,9 +1,6 @@
-function addTag(tagName) {
+function addTag(tagName) { // sử dụng chrome storage để lưu trữ thẻ tag người dùng nhập thêm
     chrome.storage.sync.get('myTags', function(data) {
-        console.log(data)
-        console.log(Array.isArray(data.myTags))
         if (Array.isArray(data.myTags)) {
-            console.log(data, 'tagname')
             data.myTags.push(tagName);
         } else {
             data.myTags = [tagName];
@@ -15,10 +12,8 @@ function addTag(tagName) {
     });
 }
 
-function deleteTag(tagName) {
+function deleteTag(tagName) { // Xóa bỏ tag từ chrome storage
     chrome.storage.sync.get('myTags', function(data) {
-        console.log(data)
-        console.log(Array.isArray(data.myTags));
         let id = data.myTags.indexOf(tagName);
         if (id !== -1) {
             data.myTags.splice(id, 1);
@@ -29,7 +24,7 @@ function deleteTag(tagName) {
     });
 }
 
-function renderTag(tagName) {
+function renderTag(tagName) { // render checkbox tương ứng với thẻ tag
     $(".my-tags").append(`
         <div class="checkbox-inline">
             <label><input type="checkbox" value="${tagName}">${tagName}</label>
@@ -38,10 +33,8 @@ function renderTag(tagName) {
     );
 }
 
-function renderAllTag() {
+function renderAllTag() { // render tất cả các thẻ tag của người dùng
     chrome.storage.sync.get('myTags', function(data) {
-        console.log(data)
-        console.log(Array.isArray(data.myTags))
         if (Array.isArray(data.myTags)) {
             data.myTags.forEach((item) => {
                 renderTag(item)
@@ -50,7 +43,7 @@ function renderAllTag() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () { 
     renderAllTag();
     $("#pause").hide();
     $('#play').on('click', () => {
@@ -68,9 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
         $("#play").show();
     });
 
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { // get trang thái pause, play của ảnh trên trang
         chrome.tabs.sendMessage(tabs[0].id, {message: "get status"}, function(response) {
-            console.log(response);
             if (response.isPlaying) {
                 $("#pause").show();
                 $("#play").hide();
@@ -85,9 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    $(document).on('change', ".checkbox-inline input", (e) => {
+    $(document).on('change', ".checkbox-inline input", (e) => { // thêm hoặc xóa tag khi người dùng click vào checkbox
         let tag = e.target.value;
-        console.log(tag)
         let message = '';
         if (e.target.checked) {
             message = 'add tag';
@@ -100,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })
 
-    $(".input-group-addon").on('click', () => {
+    $(".input-group-addon").on('click', () => { // thêm thẻ tag
         let tag = $('#tag').val();
         if (tag !== '') {
             $('#tag').val('');
@@ -111,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
     });
 
-    $(document).on("mouseover", ".checkbox-inline", function() {
+    $(document).on("mouseover", ".checkbox-inline", function() { //hiển thị nút xóa tag khi hover chuột qua checkbox
         if (!$(this).find('input')[0].checked) {
             $(this).find("span").css('display', 'inline');
         }
@@ -120,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $(this).find("span").css('display', 'none');
     });
 
-    $(document).on("click", ".delete-tag", function() {
+    $(document).on("click", ".delete-tag", function() { // khi người dùng xóa tag
         let tagName = $(this).parent().find("input").val();
         $(this).parent().remove();
         deleteTag(tagName);

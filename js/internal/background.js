@@ -1,17 +1,17 @@
-var tagList = ["cat"];
-var img = 0;
-var isPlaying = false;
+var tagList = ["cat"]; // tag mặc định
+var img = 0; // biến cục bộ để setInterval
+var isPlaying = false; //trang thái ảnh có đang chạy hay không
 
-function renderStatus(statusText) {
+function renderStatus(statusText) { // hiển thị trạng thái load ảnh
 $('#status').text(statusText);
 }
 
-function renderImage(imageData) {
+function renderImage(imageData) { //append url image nhận được vào thẻ html
     $('#image-wrap').attr('href', imageData.url)
     $('#image').attr('src', imageData.image_original_url)
 }
 
-async function getBoobsUrl() {
+async function getUrl() { // get random url của ảnh
     let tag = tagList[Math.floor(Math.random()*tagList.length)];
     if (tag === undefined) {
         return;
@@ -33,16 +33,16 @@ var textnode = '\
         </div>\
     </div>';
 
-function playImg() {
+function playImg() { // thực hiện play ảnh
     $("#content1").show();
-    getBoobsUrl();
+    getUrl();
     img = setInterval(() => {
-        getBoobsUrl();
+        getUrl();
     }, 5000);
     isPlaying = true;
 }
 
-function pauseImg() {
+function pauseImg() { // dừng hiển thị
     $("#content1").hide();
     console.log(img);
     clearInterval(img);
@@ -65,14 +65,6 @@ $(document).ready(function(){
     
     $('head').prepend('<script>isVip=true;</script>');
     $('#wrap-extension').draggable({ containment: "window" }).resizable({handles: 'e, w'});
-    // $(window).on( "blur", function(e){
-    //     console.log('chuyen tab ra')
-    // });
-
-    // $(window).on( "focus", function(e){
-    //     console.log('chuyen tab vào')
-    // });
-
     chrome.runtime.onMessage.addListener((request, port, sendResponse) => {
         switch (request.message) {
             case 'get status':
