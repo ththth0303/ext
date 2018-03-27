@@ -1,0 +1,15 @@
+.content {
+    width: 400px;
+}
+.checkbox-inline {
+    margin-left: 0px !important;
+}
+
+.delete-tag {
+    display: none;
+    color: red;
+}
+
+.input-group {
+    margin-top: 10px;
+}
